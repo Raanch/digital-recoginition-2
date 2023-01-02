@@ -13,32 +13,20 @@ import PIL.ImageOps
 import os, ssl, time
 
 #Setting an HTTPS Context to fetch data from OpenML
-if (not os.environ.get('PYTHONHTTPSVERIFY', '') and
-    getattr(ssl, '_create_unverified_context', None)): 
-    ssl._create_default_https_context = ssl._create_unverified_context
+
 
 #Fetching the data
-X, y = fetch_openml('mnist_784', version=1, return_X_y=True)
-print(pd.Series(y).value_counts())
-classes = ['0', '1', '2','3', '4','5', '6', '7', '8', '9']
-nclasses = len(classes)
+
 
 #Splitting the data and scaling it
-X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=9, train_size=7500, test_size=2500)
-#scaling the features
-X_train_scaled = X_train/255.0
-X_test_scaled = X_test/255.0
+
 
 #Fitting the training data into the model
 clf = LogisticRegression(solver='saga', multi_class='multinomial').fit(X_train_scaled, y_train)
 
 #Calculating the accuracy of the model
-y_pred = clf.predict(X_test_scaled)
-accuracy = accuracy_score(y_test, y_pred)
-print("The accuracy is :- ",accuracy)
 
 #Starting the camera
-cap = cv2.VideoCapture(0)
 
 while(True):
   # Capture frame-by-frame
@@ -77,12 +65,6 @@ while(True):
     print("Predicted class is: ", test_pred)
 
     # Display the resulting frame
-    cv2.imshow('frame',gray)
-    if cv2.waitKey(1) & 0xFF == ord('q'):
-      break
-  except Exception as e:
-    pass
-
+    
 # When everything done, release the capture
-cap.release()
-cv2.destroyAllWindows()
+
